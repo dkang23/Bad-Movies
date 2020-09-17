@@ -2,48 +2,82 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 // import AnyComponent from './components/filename.jsx'
-import Search from './components/Search.jsx'
-import Movies from './components/Movies.jsx'
-
+import Search from './components/Search.jsx';
+import Movies from './components/Movies.jsx';
+import axios from 'axios';
 class App extends React.Component {
   constructor(props) {
-  	super(props)
-  	this.state = {
-      movies: [{deway: "movies"}],
-      favorites: [{deway: "favorites"}],
+    super(props);
+    this.state = {
+      movies: [],
+      favorites: [],
+      genres: [],
       showFaves: false,
     };
-    
-    // you might have to do something important here!
   }
 
-  getMovies() {
-    // make an axios request to your server on the GET SEARCH endpoint
+  componentDidMount() {
+    this.getGenres();
   }
 
-  saveMovie() {
-    // same as above but do something diff
+  getGenres() {
+    axios
+      .get('/movies/genres')
+      .then((genres) => {
+        console.log('IIN INDEX>JSC:', genres);
+        this.setState({ genres: genres.data });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
-  deleteMovie() {
-    // same as above but do something diff
+  getMovies(genre) {
+    axios
+      .get('/search', { genre })
+      .then((movies) => {
+        this.setState({ movies });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  saveMovie(movie) {
+    // axios.post('/save')
+  }
+
+  deleteMovie(movie) {
+    // axios.delete('./delete')
   }
 
   swapFavorites() {
-  //dont touch
+    //dont touch
     this.setState({
-      showFaves: !this.state.showFaves
+      showFaves: !this.state.showFaves,
     });
   }
 
-  render () {
-  	return (
-      <div className="app">
-        <header className="navbar"><h1>Bad Movies</h1></header> 
-        
-        <div className="main">
-          <Search swapFavorites={this.swapFavorites} showFaves={this.state.showFaves}/>
-          <Movies movies={this.state.showFaves ? this.state.favorites : this.state.movies} showFaves={this.state.showFaves}/>
+  render() {
+    return (
+      <div className='app'>
+        <header className='navbar'>
+          <h1>Bad Movies</h1>
+        </header>
+
+        <div className='main'>
+          <Search
+            genres={this.state.genres}
+            searchMovies={this.getMovies.bind(this)}
+            swapFavorites={this.swapFavorites}
+            showFaves={this.state.showFaves}
+          />
+          <Movies
+            movies={
+              this.state.showFaves ? this.state.favorites : this.state.movies
+            }
+            showFaves={this.state.showFaves}
+          />
         </div>
       </div>
     );
