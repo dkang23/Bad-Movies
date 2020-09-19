@@ -1,18 +1,18 @@
 const movieModel = require('../models/movieModel.js');
 const apiHelpers = require('../helpers/apiHelpers.js');
-var { saveMov, deleteMov } = require('../../db/mongodb/index.js');
+var { saveMov, deleteMov, getMovs } = require('../../db/mongodb/index.js');
 //Return requests to the client
 module.exports = {
   getSearch: (req, res) => {
     apiHelpers
-      .getMoviesByGenre(req.body.genre)
+      .getMoviesByGenre(req.query.genre)
       .then((data) => {
-        console.log('GETSEARCH IN MOVIECONTROLLER: ', data);
-        res.status(200).send(data);
+        res.status(200).send(data.data.results);
       })
       .catch((err) => {
         console.error(err);
       });
+
     // get the search genre
     // https://www.themoviedb.org/account/signup
     // get your API KEY
@@ -21,16 +21,10 @@ module.exports = {
     // and sort them by horrible votes using the search parameters in the API
   },
   getGenres: (req, res) => {
-    console.log('ingetGenres movieontroller');
     apiHelpers
       .getGenres()
       .then((data) => {
-        var genres = [];
-        for (var i = 0; i < data.data.genres.length; i++) {
-          genres.push(data.data.genres[i].name);
-        }
-        console.log('GETGENRES IN MOVIECONTROLLER: ', genres);
-        res.status(200).send(genres);
+        res.status(200).send(data.data.genres);
       })
       .catch((err) => {
         console.error(err);
@@ -40,10 +34,23 @@ module.exports = {
     // use this endpoint, which will also require your API key: https://api.themoviedb.org/3/genre/movie/list
     // send back
   },
-  saveMovie: (req, res) => {
-    req.body.movie;
+
+  getMovies: (req, res) => {
+    getMovs()
+      .then((movies) => {
+        res.status(200).send(movies);
+      })
+      .catch((err) => console.log(err));
   },
+
+  saveMovie: (req, res) => {
+    saveMov(req.body.movie);
+    res.sendStatus(201);
+  },
+
   deleteMovie: (req, res) => {
-    req.body.movie;
+    var deletedMov = req.body.movie;
+    deleteMov(req.body.movie);
+    res.sendStatus(201);
   },
 };

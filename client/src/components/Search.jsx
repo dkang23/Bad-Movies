@@ -5,12 +5,13 @@ class Search extends React.Component {
     super(props);
     this.state = {
       movies: [],
-      selectedGenre: '',
+      selectedGenre: 28,
     };
   }
 
+  //handle this
   searchHandler() {
-    console.log(this.state.selectedGenre);
+    this.props.searchMovies(this.state.selectedGenre);
   }
 
   changeHandler(e) {
@@ -20,11 +21,7 @@ class Search extends React.Component {
   render() {
     return (
       <div className='search'>
-        <button
-          onClick={() => {
-            this.props.swapFavorites();
-          }}
-        >
+        <button onClick={this.props.swapFavorites}>
           {this.props.showFaves ? 'Show Results' : 'Show Favorites'}
         </button>
         <br />
@@ -35,7 +32,7 @@ class Search extends React.Component {
 
         <select id='genre' onChange={this.changeHandler.bind(this)}>
           {this.props.genres.map((genre) => {
-            return <option value={genre}>{genre}</option>;
+            return <option value={genre.id}>{genre.name}</option>;
           })}
         </select>
         <br />

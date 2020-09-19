@@ -15,9 +15,16 @@ class Movies extends React.Component {
   render() {
     return (
       <ul className='movies'>
-        {this.props.movies.map((movie) => {
-          return <MovieEntry movie={movie} />;
-        })}
+        {this.props.movies.length === 0
+          ? null
+          : this.props.movies.map((movie) => {
+              return (
+                <MovieEntry
+                  movie={movie}
+                  clickHandler={this.props.clickHandler}
+                />
+              );
+            })}
       </ul>
     );
   }

@@ -5,6 +5,7 @@ import $ from 'jquery';
 import Search from './components/Search.jsx';
 import Movies from './components/Movies.jsx';
 import axios from 'axios';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -14,6 +15,9 @@ class App extends React.Component {
       genres: [],
       showFaves: false,
     };
+
+    this.saveMovie = this.saveMovie.bind(this);
+    this.deleteMovie = this.deleteMovie.bind(this);
   }
 
   componentDidMount() {
@@ -24,7 +28,6 @@ class App extends React.Component {
     axios
       .get('/movies/genres')
       .then((genres) => {
-        console.log('IIN INDEX>JSC:', genres);
         this.setState({ genres: genres.data });
       })
       .catch((err) => {
@@ -34,21 +37,47 @@ class App extends React.Component {
 
   getMovies(genre) {
     axios
-      .get('/search', { genre })
+      .get('/movies/search', {
+        params: {
+          genre: genre,
+        },
+      })
       .then((movies) => {
-        this.setState({ movies });
+        this.setState({ movies: movies.data });
       })
       .catch((err) => {
         console.error(err);
       });
   }
 
+  setFavoritesFromDB() {
+    axios
+      .get('/movies/favorites')
+      .then((movies) => {
+        this.setState({ favorites: movies.data });
+      })
+      .catch((err) => console.log(err));
+  }
+
   saveMovie(movie) {
-    // axios.post('/save')
+    axios
+      .post('/movies/save', { movie })
+      .then(() => console.log('saved favorite'))
+      .catch((err) => console.error(err));
   }
 
   deleteMovie(movie) {
-    // axios.delete('./delete')
+    axios
+      .delete('/movies/delete', { data: { movie } })
+      .then(() => {
+        this.setFavoritesFromDB();
+        console.log('deleted favorite');
+      })
+      .catch((err) => console.error(err));
+  }
+
+  clickHandler(movie) {
+    !this.state.showFaves ? this.saveMovie(movie) : this.deleteMovie(movie);
   }
 
   swapFavorites() {
@@ -56,6 +85,7 @@ class App extends React.Component {
     this.setState({
       showFaves: !this.state.showFaves,
     });
+    this.setFavoritesFromDB();
   }
 
   render() {
@@ -69,10 +99,11 @@ class App extends React.Component {
           <Search
             genres={this.state.genres}
             searchMovies={this.getMovies.bind(this)}
-            swapFavorites={this.swapFavorites}
+            swapFavorites={this.swapFavorites.bind(this)}
             showFaves={this.state.showFaves}
           />
           <Movies
+            clickHandler={this.clickHandler.bind(this)}
             movies={
               this.state.showFaves ? this.state.favorites : this.state.movies
             }

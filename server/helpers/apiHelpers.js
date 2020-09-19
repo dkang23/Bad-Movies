@@ -8,7 +8,6 @@ var getGenres = () => {
       'https://api.themoviedb.org/3/genre/movie/list?api_key=d5e13c79fcf278273ea5dae2483a1382&language=en-US'
     )
     .then((data) => {
-      console.log('GENRES IN API HELPER: ', data);
       return data;
     })
     .catch((err) => console.error(err));
@@ -20,7 +19,6 @@ var getMoviesByGenre = (genre) => {
       `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=${genre}`
     )
     .then((data) => {
-      console.log('MOVIES IN API HELPER: ', data);
       return data;
     })
     .catch((err) => console.error(err));
