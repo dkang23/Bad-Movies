@@ -12,6 +12,9 @@ class Search extends React.Component {
   //handle this
   searchHandler() {
     this.props.searchMovies(this.state.selectedGenre);
+    if (this.props.showFaves) {
+      this.props.swapFavorites();
+    }
   }
 
   changeHandler(e) {
