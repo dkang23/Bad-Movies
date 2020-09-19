@@ -9,6 +9,10 @@ class Search extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.props.searchMovies(this.state.selectedGenre);
+  }
+
   //handle this
   searchHandler() {
     this.props.searchMovies(this.state.selectedGenre);
@@ -19,6 +23,7 @@ class Search extends React.Component {
 
   changeHandler(e) {
     this.setState({ selectedGenre: e.target.value });
+    this.searchHandler();
   }
 
   render() {
@@ -41,8 +46,8 @@ class Search extends React.Component {
         <br />
         <br />
 
-        <button onClick={this.searchHandler.bind(this)}>Search </button>
-        <h2>Click Search to pick a genre</h2>
+        {/* <button onClick={this.searchHandler.bind(this)}>Search </button>
+        <h2>Click Search to pick a genre</h2> */}
         <h2>Click a movie to add to favorites</h2>
         <h2>Click a movie in favorites to delete it</h2>
       </div>
