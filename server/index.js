@@ -16,6 +16,6 @@ const movieRoutes = require('./routes/movieRoutes.js');
 //Use routes
 app.use('/movies', movieRoutes);
 
-app.listen(3000, function () {
-  console.log('listening on port 3000!');
+app.listen(80, function () {
+  console.log('listening on port 80!');
 });
